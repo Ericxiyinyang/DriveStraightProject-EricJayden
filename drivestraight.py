@@ -4,6 +4,8 @@ from EncoderConstants import MotorConstants as MC
 class StraightDriver:
     def __init__(self, drivetrain):
         self.drivetrain = drivetrain
+        self.lastRecDistance = 0
+        self.distanceGap = 0
 
     def run(self):
         if self.drivetrain.getAvgDistanceTravelled() >= EC.intendedDistance:
@@ -12,6 +14,7 @@ class StraightDriver:
 
         lTravel = self.drivetrain.getLEncoderDistance()
         rTravel = self.drivetrain.getREncoderDistance()
+        self.distanceGap = self.drivetrain.getAvgDistanceTravelled() - self.lastRecDistance
         print(f"Left traveled:{lTravel}, Right traveled:{rTravel}, Avg traveled:{self.drivetrain.getAvgDistanceTravelled()}")
         if lTravel == rTravel:
             self.drivetrain.move(0, MC.forwardAmount)
@@ -21,5 +24,7 @@ class StraightDriver:
         elif lTravel < rTravel:
             print("RGREATER")
             self.drivetrain.move(MC.rotateAmount, MC.forwardAmount)
+        self.lastRecDistance = self.drivetrain.getAvgDistanceTravelled()
+
 
 
